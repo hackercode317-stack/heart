@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Forever | Dhanashree</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #ff4d6d;
+            --accent: #ffb3c1;
+            --bg-dark: #1a0101; 
+            --glass: rgba(255, 255, 255, 0.08);
+            --text: #fff5f5;
+            --border: rgba(255, 255, 255, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        body { background: var(--bg-dark); color: var(--text); font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+
+        #cursor { width: 30px; height: 30px; border: 2px solid var(--primary); position: fixed; border-radius: 50%; pointer-events: none; z-index: 10000; transition: 0.1s; transform: translate(-50%, -50%); box-shadow: 0 0 15px var(--primary); }
+        #dot { width: 8px; height: 8px; background: white; position: fixed; border-radius: 50%; pointer-events: none; z-index: 10001; transform: translate(-50%, -50%); }
+
+        /* --- NEW LOGIN PORTAL DESIGN --- */
+        #portal { 
+            position: fixed; 
+            inset: 0; 
+           background: url('https://i.postimg.cc/ZR2KspDL/IMG-20260423-WA0019.jpg') no-repeat center center/cover; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 9999; 
+        }
+        
+        .p-box { 
+            text-align: center; 
+            padding: 50px 40px; 
+            border-radius: 25px; 
+            background: rgba(45, 10, 15, 0.85); 
+            border: 1px solid rgba(255, 215, 0, 0.3); 
+            backdrop-filter: blur(10px); 
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            max-width: 380px;
+            width: 90%;
+        }
+
+        .portal-title { font-family: 'Great Vibes', cursive; font-size: 3rem; color: #f3e5ab; margin-bottom: 5px; }
+        .portal-sub { font-size: 0.9rem; letter-spacing: 2px; color: #fff; opacity: 0.8; margin-bottom: 30px; }
+
+        #passInput { 
+            background: rgba(0,0,0,0.3); 
+            border: 1px solid rgba(255, 215, 0, 0.5); 
+            border-radius: 10px;
+            color: #f3e5ab; 
+            font-size: 2rem; 
+            width: 100%; 
+            padding: 10px;
+            text-align: center; 
+            outline: none; 
+            letter-spacing: 10px; 
+            margin-bottom: 25px;
+        }
+
+        .unlock-btn { 
+            background: transparent; 
+            color: #f3e5ab; 
+            border: 2px solid #f3e5ab; 
+            padding: 12px 0; 
+            width: 100%;
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-size: 1.2rem;
+            transition: 0.4s;
+            font-family: 'Dancing Script';
+        }
+        .unlock-btn:hover { background: #f3e5ab; color: #2d0a0f; box-shadow: 0 0 20px #f3e5ab; }
+
+        /* --- REST OF THE SITE --- */
+        #welcomeOverlay { position: fixed; inset: 0; background: var(--bg-dark); z-index: 9998; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        #welcomeOverlay h2 { font-family: 'Great Vibes', cursive; font-size: 5rem; color: var(--accent); }
+        
+        /* THE MAIN SITE CONTAINER */
+        #main {
+            display: none;
+            position: relative;
+        }
+
+        /* --- COLLAGE BACKGROUND LAYER --- */
+        #collage-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 5px;
+            padding: 5px;
+            background-color: var(--bg-dark);
+        }
+
+        .collage-item {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+            opacity: 0.3; /* Subtle overlay effect */
+        }
+
+        /* LEGIBILITY OVERLAY FOR CONTENT */
+        .content-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(26, 1, 1, 0.8), rgba(26, 1, 1, 0.95));
+            z-index: -1;
+        }
+
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; }
+        .hero h1 { font-family: 'Great Vibes', cursive; font-size: clamp(4rem, 15vw, 9rem); color: var(--accent); text-shadow: 0 0 30px var(--primary); }
+
+        .section-container { padding: 80px 10%; position: relative; z-index: 1; }
+        
+        .folder-header h2 { font-family: 'Great Vibes', cursive; font-size: 3.5rem; color: var(--primary); text-align: center; margin-bottom: 40px; }
+        .folder-header { text-align: center; }
+
+        .timeline-box { max-width: 800px; margin: 0 auto; }
+        .timeline-item { background: rgba(255, 255, 255, 0.04); padding: 30px; border-radius: 20px; margin: 25px 0; border: 1px solid var(--border); backdrop-filter: blur(10px); }
+        .tl-date { color: var(--primary); font-family: 'Dancing Script'; font-size: 1.8rem; font-weight: 700; }
+        
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .polaroid-card { background: #fff; padding: 12px 12px 45px; border-radius: 2px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); color: #333; transition: 0.4s; }
+        .polaroid-card:hover { transform: scale(1.03) rotate(2deg); z-index: 5; }
+        
+        .img-wrap { width: 100%; height: 280px; overflow: hidden; }
+        .img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .proposal-section { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
+        .yes-btn { background: var(--primary); color: white; padding: 15px 60px; border-radius: 50px; font-size: 1.8rem; border: none; cursor: pointer; font-family: 'Dancing Script'; }
+        
+        footer { padding: 80px; text-align: center; background: rgba(0,0,0,0.7); backdrop-filter: blur(15px); }
+        .pill { background: rgba(255, 255, 255, 0.05); color: var(--accent); padding: 10px 25px; border-radius: 50px; text-decoration: none; margin: 5px; display: inline-block; border: 1px solid var(--border); }
+        #canvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+    <div id="cursor"></div>
+    <div id="dot"></div>
+
+    <section id="portal">
+        <div class="p-box">
+            <div class="portal-title">Dhanu & Arjun</div>
+            <div class="portal-sub">A Gift From April 2nd</div>
+            
+            <p style="color: #f3e5ab; margin-bottom: 10px; font-weight: 300;">Enter Secret Code</p>
+            <input type="password" id="passInput" maxlength="4" placeholder="••••">
+            <br>
+            <button onclick="unlock()" class="unlock-btn">Unlock Our Story ❤️</button>
+        </div>
+    </section>
+
+    <div id="welcomeOverlay">
+        <h2>Welcome Home, Dhanu! 👸✨</h2>
+        <div style="font-size: 3rem; margin-top: 30px;">🦋🪷💍🧿</div>
+    </div>
+
+    <div id="main">
+        <div id="collage-bg">
+            <img src="https://i.postimg.cc/9MhM4vWk/input-image.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/FH5wn2Bc/20251107-150320.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/s2CHw71Q/IMG-20251101-WA0000.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/gkRTRg20/IMG-20250508-WA0018.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/FH5wn2Bc/20251107-150320.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/9MhM4vWk/input-image.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/s2CHw71Q/IMG-20251101-WA0000.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/gkRTRg20/IMG-20250508-WA0018.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/9MhM4vWk/input-image.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/FH5wn2Bc/20251107-150320.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/s2CHw71Q/IMG-20251101-WA0000.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/gkRTRg20/IMG-20250508-WA0018.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/9MhM4vWk/input-image.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/FH5wn2Bc/20251107-150320.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/s2CHw71Q/IMG-20251101-WA0000.jpg" class="collage-item">
+            <img src="https://i.postimg.cc/gkRTRg20/IMG-20250508-WA0018.jpg" class="collage-item">
+        </div>
+        <div class="content-overlay"></div>
+
+        <header class="hero">
+            <p style="letter-spacing: 5px; opacity: 0.6; backdrop-filter: blur(5px);">ESTABLISHED OCT 2025</p>
+            <h1>Dhanashree</h1>
+        </header>
+
+        <section class="section-container">
+            <div class="folder-header"><h2>Our Best Occasions ❤️‍🩹</h2></div>
+            <div class="timeline-box">
+                <div class="timeline-item"><span class="tl-date">25th Oct</span><p>We met for 1st time in bus numb 152. She was wearing a cute skyblue color tees and looking soo pretty.</p></div>
+                <div class="timeline-item"><span class="tl-date">3rd Feb</span><p>Her birthday we celb it in Kapaleshwar temple Nashik.</p></div>
+                <div class="timeline-item"><span class="tl-date">30th March</span><p>We talk on video call for the 1st time.</p></div>
+                <div class="timeline-item"><span class="tl-date">2nd April</span><p>I buy jumkas 1st time for any girl and she was only her.</p></div>
+                <div class="timeline-item"><span class="tl-date">27th May</span><p>I hug for 1st time in lift and i cried alot that day...</p></div>
+            </div>
+        </section>
+
+        <section class="section-container"><div class="folder-header"><h2>Your Memories 🤞🫀</h2></div><div class="photo-grid">
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/FH5wn2Bc/20251107-150320.jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/s2CHw71Q/IMG-20251101-WA0000.jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/fbMpMYZL/IMG-20251119-213814-971.webp"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/Kj24vZcZ/Snapchat-377904387.jpg"></div></div>
+        </div></section>
+
+        <section class="section-container"><div class="folder-header"><h2>My Favorites 🫶🥹</h2></div><div class="photo-grid">
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/bN2KgzLB/IMG-20250919-214501-642-(2).jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/8Cw3csPp/dhanshree-03-20260321-0001.jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/gkRTRg20/IMG-20250508-WA0018.jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/bwc4FKBH/IMG-20251025-WA0028.jpg"></div></div>
+        </div></section>
+
+        <section class="section-container"><div class="folder-header"><h2>My Comfort Zone 🎀❤️‍🩹</h2></div><div class="photo-grid">
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/3RpdTyTZ/dhanshree-03-20251011-0001-(1).jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/D0P0StmZ/IMG-20251114-WA0000.jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/yWq0shMt/IMG-20250508-WA0003-(2).jpg"></div></div>
+        </div></section>
+
+        <section class="section-container"><div class="folder-header"><h2>Our Talks ❤️‍🩹🥹</h2></div><div class="photo-grid">
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/HngjspWd/Screenshot-20251026-192227-Snapchat.jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/x82qT0jr/Screenshot-20251026-191930-Snapchat.jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/C5gdLFhX/Screenshot-20251026-191527-Snapchat.jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/tJj7CXqB/Screenshot-20251026-191457-Snapchat.jpg"></div></div>
+        </div></section>
+
+        <section class="section-container"><div class="folder-header"><h2>Trend Winner 😘🫠</h2></div><div class="photo-grid">
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/GhsZKczK/file-00000000033c622faf61b358e077a69f.png"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/bvZZmCFp/file-000000007ce861f7a8432642bdc79c05.png"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/CKwXwbYg/Snapchat-481863696.jpg"></div></div>
+        </div></section>
+
+        <section class="section-container"><div class="folder-header"><h2>Her Smile 😘🥹🫠</h2></div><div class="photo-grid">
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/MKYfHjjB/Screenshot-20250811-124940-Instagram-(1).jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/dQ2LNTnK/file-00000000ef7071fd97918daf1df13e62.png"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/FKw78y2f/IMG-20250919-214536-072-(3).jpg"></div></div>
+            <div class="polaroid-card"><div class="img-wrap"><img src="https://i.postimg.cc/c1Rrk8TG/IMG-20260318-WA0002.jpg"></div></div>
+        </div></section>
+
+        <section class="proposal-section">
+            <h2>Will you be mine forever?</h2>
+            <div class="btn-container">
+                <button class="yes-btn" onclick="celebrate()">YES! ❤️</button>
+                <button id="noBtn" onmouseover="moveNo()" onclick="blockNo()">No</button>
+            </div>
+        </section>
+
+        <footer>
+            <a href="https://www.instagram.com/.aarrjya19./" target="_blank" class="pill"><b>Insta His:</b> .aarrjya19.</a>
+            <a href="https://www.instagram.com/dhanashree_.03/" target="_blank" class="pill"><b>Insta Her:</b> dhanashree_.03</a>
+            <p style="margin-top: 40px; opacity: 0.3;">Arjun Pravin Wagh &copy; 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        const dot = document.getElementById('dot');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {x: e.clientX, y: e.clientY, duration: 0.15});
+            gsap.to(dot, {x: e.clientX, y: e.clientY, duration: 0.05});
+        });
+
+        function unlock() {
+            if(document.getElementById('passInput').value === "0319") {
+                // Secret Code is 0319
+                gsap.to("#portal", {y: "-100%", duration: 1.2, ease: "expo.inOut"});
+                setTimeout(() => {
+                    document.getElementById('portal').style.display = "none";
+                    const welcome = document.getElementById('welcomeOverlay');
+                    welcome.style.display = "flex";
+                    gsap.from(welcome.children, {opacity: 0, y: 20, stagger: 0.3, duration: 1});
+                    setTimeout(() => {
+                        gsap.to("#welcomeOverlay", {opacity: 0, duration: 1, onComplete: () => {
+                            welcome.style.display = "none";
+                            document.getElementById('main').style.display = "block";
+                            initAnimations();
+                        }});
+                    }, 2500); // Welcome stays for 2.5 seconds
+                }, 800);
+            } else { alert("Try again... ❤️"); }
+        }
+
+        function moveNo() {
+            const noBtn = document.getElementById('noBtn');
+            noBtn.style.position = 'fixed';
+            const x = Math.random() * (window.innerWidth - 120);
+            const y = Math.random() * (window.innerHeight - 60);
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        }
+
+        function blockNo() { alert("No is not an option! ❤️"); }
+        function celebrate() { alert("I love you more than anything, Dhanashree! ❤️"); }
+
+        function initAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+            gsap.utils.toArray(".timeline-item, .polaroid-card").forEach(item => {
+                gsap.from(item, { scrollTrigger: { trigger: item, start: "top 85%" }, opacity: 0, y: 30, duration: 1 });
+            });
+        }
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let hearts = [];
+        class Heart {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 10;
+                this.size = Math.random() * 15 + 10;
+                this.speed = Math.random() * 1 + 0.5;
+                this.opacity = Math.random() * 0.4 + 0.1;
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#ff4d6d';
+                ctx.font = `${this.size}px serif`;
+                ctx.fillText('❤️', this.x, this.y);
+            }
+            update() {
+                this.y -= this.speed;
+                if (this.y < -30) this.y = canvas.height + 30;
+            }
+        }
+        for(let i=0; i<30; i++) hearts.push(new Heart());
+        function animate() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            hearts.forEach(h => { h.draw(); h.update(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
